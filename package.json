@@ -1,15 +1,48 @@
 {
   "name": "max31865",
   "version": "1.0.0",
-  "description": "",
+  "description": "Interface with MAX31865 thermocouple amplifiers",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint --ignore-path .gitignore .",
+    "test:unit": "NODE_ENV=test jest",
+    "test": "npm run lint && npm run test:unit"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "engines": {
+    "node": ">=10.15.1"
+  },
+  "keywords": [
+    "max31865",
+    "thermocouple"
+  ],
+  "author": "Marius Rumpf",
+  "license": "MIT",
   "dependencies": {
     "spi-device": "^2.0.6"
+  },
+  "devDependencies": {
+    "eslint": "^5.14.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "jest": "^24.1.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true,
+      "jest": true
+    },
+    "rules": {
+      "no-bitwise": "off",
+      "no-param-reassign": "off",
+      "no-console": "off"
+    },
+    "extends": "airbnb-base"
+  },
+  "jest": {
+    "moduleFileExtensions": ["js"],
+    "testMatch": [
+      "**/tests/**/*.spec.js"
+    ]
   }
 }

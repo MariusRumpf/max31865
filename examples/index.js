@@ -1,4 +1,5 @@
-const { MAX31865 } = require('../max31865');
+const MAX31865 = require('../index');
+
 const sensor = new MAX31865();
 
 async function startReading() {

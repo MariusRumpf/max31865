@@ -1,7 +1,6 @@
-'use strict';
-
 const spi = require('spi-device');
 const { delay } = require('./utils');
+const { resistanceToTemperature, rawToResistance } = require('./math');
 
 const CONFIG_REG = 0x00;
 const CONFIG_BIAS = 0x80;
@@ -18,20 +17,17 @@ const FAULT_REFINHIGH = 0x10;
 const FAULT_RTDINLOW = 0x08;
 const FAULT_OVUV = 0x04;
 
-const RTD_A = 3.9083e-3;
-const RTD_B = -5.775e-7;
-
 class MAX31865 {
   constructor(bus = 0, device = 0, {
     rtdNominal = 100,
-    refResistor = 430.0,
-    wires = 2
+    refResistor = 430,
+    wires = 2,
   } = {}) {
     this.rtdNominal = rtdNominal;
     this.refResistor = refResistor;
 
     if (wires !== 2 && wires !== 3 && wires !== 4) {
-        throw Error('Wires must be a value of 2, 3, or 4.');
+      throw Error('Wires must be a value of 2, 3, or 4.');
     }
     this.wires = wires;
 
@@ -39,13 +35,13 @@ class MAX31865 {
       mode: spi.MODE1, // Supports MODE1 and MODE3
       maxSpeedHz: 500000,
     });
-    this.transfer = (message) => (
+    this.transfer = message => (
       new Promise((resolve, reject) => {
-        this.device.transfer(message, (err, message) => {
+        this.device.transfer(message, (err, res) => {
           if (err) {
             reject(err);
           } else {
-            resolve(message);
+            resolve(res);
           }
         });
       })
@@ -100,7 +96,7 @@ class MAX31865 {
       byteLength: 3,
     }];
     await this.transfer(message);
-    const [, msb, lsb]= message[0].receiveBuffer;
+    const [, msb, lsb] = message[0].receiveBuffer;
     return (msb << 8) | lsb;
   }
 
@@ -220,10 +216,8 @@ class MAX31865 {
    * @returns {Promise<number>}
    */
   async getResistance() {
-    let resistance = await this.readRtd();
-    resistance /= 32768;
-    resistance *= this.refResistor;
-    return resistance.toFixed(6);
+    const rtd = await this.readRtd();
+    return rawToResistance(rtd, this.refResistor);
   }
 
   /**
@@ -231,30 +225,8 @@ class MAX31865 {
    * @returns {Promise<number>}
    */
   async getTemperature() {
-    //  This math originates from: http://www.analog.com/media/en/technical-documentation/application-notes/AN709_0.pdf
     const resistance = await this.getResistance();
-    const z1 = -RTD_A;
-    const z2 = RTD_A * RTD_A - (4 * RTD_B);
-    const z3 = (4 * RTD_B) / this.rtdNominal;
-    const z4 = 2 * RTD_B;
-    let temp = z2 + (z3 * resistance);
-    temp = (Math.sqrt(temp) + z1) / z4;
-    if (temp >= 0) {
-      return temp.toFixed(6);
-    }
-
-    let rpoly = resistance;
-    temp = -242.02;
-    temp += 2.2228 * rpoly;
-    rpoly *= resistance; // square
-    temp += 2.5859e-3 * rpoly;
-    rpoly *= resistance; // ^3
-    temp -= 4.8260e-6 * rpoly;
-    rpoly *= resistance; // ^4
-    temp -= 2.8183e-8 * rpoly;
-    rpoly *= resistance; // ^5
-    temp += 1.5243e-10 * rpoly;
-    return temp.toFixed(6);
+    return resistanceToTemperature(resistance, this.rtdNominal);
   }
 }
 
