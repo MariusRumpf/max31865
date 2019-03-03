@@ -13,7 +13,8 @@
   },
   "keywords": [
     "max31865",
-    "thermocouple"
+    "thermocouple",
+    "iot"
   ],
   "author": "Marius Rumpf",
   "license": "MIT",

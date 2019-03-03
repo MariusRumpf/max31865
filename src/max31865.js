@@ -18,6 +18,14 @@ const FAULT_RTDINLOW = 0x08;
 const FAULT_OVUV = 0x04;
 
 class MAX31865 {
+  /**
+   * @param {Number} bus spi bus to use
+   * @param {Number} device spi bus to use
+   * @param {Object} options
+   * @param {Number} options.rtdNominal nominal resistance of sensor
+   * @param {Number} options.refResistor reference resistance on board
+   * @param {Number} options.wires wire count for sensor (2, 3 or 4)
+   */
   constructor(bus = 0, device = 0, {
     rtdNominal = 100,
     refResistor = 430,
@@ -35,6 +43,7 @@ class MAX31865 {
       mode: spi.MODE1, // Supports MODE1 and MODE3
       maxSpeedHz: 500000,
     });
+
     this.transfer = message => (
       new Promise((resolve, reject) => {
         this.device.transfer(message, (err, res) => {

@@ -4,7 +4,7 @@ const sensor = new MAX31865();
 
 async function startReading() {
   const raw = await sensor.readRtd();
-  console.log(`Raw rtd value: ${raw}`);
+  console.log(`Raw RTD value: ${raw}`);
 
   const resistance = await sensor.getResistance();
   console.log(`Resistance: ${resistance} Ω`);
