@@ -2,8 +2,8 @@
 
 > Node.js module for the MAX31865 thermocouple amplifier using [spi-device](https://github.com/fivdi/spi-device#readme).
 
-[![Build Status](https://travis-ci.com/MariusRumpf/max31865.svg?branch=master)](https://travis-ci.com/MariusRumpf/max31865)
- 
+<a href="https://github.com/MariusRumpf/max31865"><img alt="GitHub Actions status" src="https://github.com/MariusRumpf/max31865/workflows/CI/badge.svg"></a>
+
 ## Install
 ```sh
 $ npm install --save max31865
