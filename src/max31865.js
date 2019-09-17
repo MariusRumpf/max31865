@@ -44,7 +44,7 @@ class MAX31865 {
       maxSpeedHz: 500000,
     });
 
-    this.transfer = message => (
+    this.transfer = (message) => (
       new Promise((resolve, reject) => {
         this.device.transfer(message, (err, res) => {
           if (err) {
