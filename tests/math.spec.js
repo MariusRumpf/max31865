@@ -3,6 +3,7 @@ const { resistanceToTemperature, rawToResistance } = require('../src/math');
 describe('MAX31865 Math', () => {
   it('converts resistances to temperatures', () => {
     expect(resistanceToTemperature(18.52)).toBe(-200);
+    expect(resistanceToTemperature(18.52, 200)).toBe(-221.01);
     expect(resistanceToTemperature(29.22)).toBe(-175);
     expect(resistanceToTemperature(39.72)).toBe(-150.008);
     expect(resistanceToTemperature(50.06)).toBe(-125.001);

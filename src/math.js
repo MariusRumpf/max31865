@@ -27,6 +27,10 @@ const resistanceToTemperature = (resistance, nominalResistance = 100) => {
   }
 
   let rpoly = resistance;
+  // For the following math to work, nominal RTD resistance must be normalized to 100 ohms
+  rpoly /= nominalResistance;
+  rpoly *= 100;
+
   temp = -242.02;
   temp += 2.2228 * rpoly;
   rpoly *= resistance; // square
