@@ -3,6 +3,10 @@
   "version": "1.0.2",
   "description": "Interface with MAX31865 thermocouple amplifiers",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MariusRumpf/max31865.git"
+  },
   "scripts": {
     "lint": "eslint --ignore-path .gitignore .",
     "test:unit": "NODE_ENV=test jest",
