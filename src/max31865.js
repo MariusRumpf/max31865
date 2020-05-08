@@ -8,6 +8,7 @@ const CONFIG_MODEAUTO = 0x40;
 const CONFIG_1SHOT = 0x20;
 const CONFIG_3WIRE = 0x10;
 const CONFIG_FAULTSTAT = 0x02;
+const CONFIG_FILT50HZ = 0x01;
 const RTDMSB_REG = 0x01;
 const FAULTSTAT_REG = 0x07;
 const FAULT_HIGHTHRESH = 0x80;
@@ -25,19 +26,26 @@ class MAX31865 {
    * @param {Number} options.rtdNominal nominal resistance of sensor
    * @param {Number} options.refResistor reference resistance on board
    * @param {Number} options.wires wire count for sensor (2, 3 or 4)
+   * @param {Number} options.filterFrequency filter frequency in Hz (50, 60)
    */
   constructor(bus = 0, device = 0, {
     rtdNominal = 100,
     refResistor = 430,
     wires = 2,
+    filterFrequency = 60,
   } = {}) {
     this.rtdNominal = rtdNominal;
     this.refResistor = refResistor;
 
     if (wires !== 2 && wires !== 3 && wires !== 4) {
-      throw Error('Wires must be a value of 2, 3, or 4.');
+      throw Error('Wires must be a decimal value of 2, 3, or 4.');
     }
     this.wires = wires;
+
+    if (filterFrequency !== 60 && filterFrequency !== 50) {
+      throw Error('Filter Frequency must be a decimal value of 50 or 60.');
+    }
+    this.filterFrequency = filterFrequency;
 
     this.device = spi.openSync(bus, device, {
       mode: spi.MODE1, // Supports MODE1 and MODE3
@@ -62,13 +70,20 @@ class MAX31865 {
    * @returns {Promise<void>}
    */
   async init() {
-    // Set wire config to register
     let config = await this.readU8(CONFIG_REG);
+
     if (this.wires === 3) {
       config |= CONFIG_3WIRE;
     } else {
       config &= ~CONFIG_3WIRE;
     }
+
+    if (this.filterFrequency === 50) {
+      config |= CONFIG_FILT50HZ;
+    } else {
+      config &= ~CONFIG_FILT50HZ;
+    }
+
     await this.writeU8(CONFIG_REG, config);
 
     // Default to no bias and no auto conversion
