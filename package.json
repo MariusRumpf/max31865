@@ -23,13 +23,13 @@
   "author": "Marius Rumpf",
   "license": "MIT",
   "dependencies": {
-    "spi-device": "^3.0.1"
+    "spi-device": "^3.1.0"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
-    "jest": "^25.3.0"
+    "jest": "^26.0.1"
   },
   "eslintConfig": {
     "root": true,
