@@ -16,7 +16,7 @@ const sensor = new MAX31865(0, 0); // For /dev/spidev0.0
 
 async function main() {
   await sensor.init();
-  
+
   const tempC = await sensor.getTemperature();
 };
 
@@ -31,7 +31,7 @@ See `examples/index.js` for a full usage example.
 ### Options
 You can configure the used sensor using the following
 options for the constructor. This example shows the
-default values. 
+default values.
 
 ```js
 const sensor = new MAX31865(
@@ -41,6 +41,7 @@ const sensor = new MAX31865(
     rtdNominal: 100, // nominal resistance of sensor
     refResistor: 430, // reference resistance on board
     wires: 2, // wires used for sensor (2, 3 or 4)
+    filterFrequency: 60, // filter frequency in Hz (50, 60)
   }
 );
 ```
@@ -48,11 +49,11 @@ const sensor = new MAX31865(
 ### Methods
 #### init()
 Has to be called once before all other methods. It initilizes the
-library and sensor for futher usage. 
+library and sensor for futher usage.
 
 Returns a promise.
 
-Usage example: 
+Usage example:
 ```js
 sensor.init()
   .then(() => {
@@ -66,7 +67,7 @@ degree celsius.
 
 Returns a promise resolving with the temperature value.
 
-Usage example: 
+Usage example:
 ```js
 sensor.getTemperature()
   .then((temperature) => {
@@ -79,7 +80,7 @@ Read the resistance value from the RTD in Ω.
 
 Returns a promise resolving with the resistance value.
 
-Usage example: 
+Usage example:
 ```js
 sensor.getResistance()
   .then((resistance) => {
@@ -93,7 +94,7 @@ Read out the integrated fault detection.
 Returns a promise resolving with an object of faults and
 if they have been detected.
 
-Usage example:  
+Usage example:
 ```js
 sensor.getFaults()
   .then((faults) => {
@@ -106,7 +107,7 @@ Reads the raw ADC convertered value from the RTD sensor.
 
 Returns a promise resolving with the raw RTD value.
 
-Usage example:  
+Usage example:
 ```js
 sensor.readRtd()
   .then((raw) => {
